@@ -18,7 +18,7 @@ describe "Taggable To Preserve Order" do
   it "should have tag associations" do
     [:tags, :colours].each do |type|
       @taggable.respond_to?(type).should be_true
-      @taggable.respond_to?("#{type.to_s.singularize}_taggings").should be_true
+      @taggable.respond_to?("#{type.to_s.singularize}_tags").should be_true
     end
   end
   
@@ -126,6 +126,21 @@ describe "Taggable" do
     @taggable.class.should be_taggable
     @taggable.should be_taggable
     @taggable.tag_types.should == TaggableModel.tag_types
+  end
+
+  it "should have tag associations" do
+    [:tags, :languages, :skills, :needs, :offerings].each do |type|
+      @taggable.respond_to?(type).should be_true
+      @taggable.respond_to?("#{type.to_s.singularize}_tags").should be_true
+    end
+  end
+  
+  it "should have tag methods" do
+    [:tags, :languages, :skills, :needs, :offerings].each do |type|
+      @taggable.respond_to?("#{type.to_s.singularize}_list").should be_true
+      @taggable.respond_to?("#{type.to_s.singularize}_list=").should be_true
+      # @taggable.respond_to?("all_#{type.to_s}_list").should be_true
+    end
   end
 
   it "should return [] right after create" do

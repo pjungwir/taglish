@@ -89,7 +89,7 @@ module Taglish::Taggable
       tag_type = Taglish::TagType.new(ptt, :scored => scored, :ordered => ordered)
       self.tag_types[ptt] = tag_type
 
-      taggings_scope_name = "#{stt}_taggings".to_sym
+      taggings_scope_name = ptt.to_sym
       taggings_order = tag_type.ordered ? "#{Taglish::Tagging.table_name}.id" : nil
 
       class_eval do
