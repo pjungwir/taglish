@@ -128,6 +128,31 @@ describe "Taggable" do
     @taggable.tag_types.should == TaggableModel.tag_types
   end
 
+  it "should return [] right after create" do
+    blank_taggable = TaggableModel.new(:name => "Bob Jones")
+    blank_taggable.tag_list.should == []
+  end
+
+  it "should save taggings" do
+    @taggable.skill_list = "ruby, rails, css"
+
+    @taggable.instance_variable_get("@skills_list").instance_of?(Taglish::TagList).should be_true
+    lambda {
+      @taggable.save
+    }.should change(Taglish::Tagging, :count).by(3)
+
+    @taggable.reload
+    @taggable.skill_list.sort.should == %w(ruby rails css).sort
+  end
+
+  it "should be able to create tags" do
+    @taggable.skill_list = "ruby, rails, css"
+
+    lambda {
+      @taggable.save
+    }.should change(Taglish::Tag, :count).by(3)
+  end
+
   context "with mixed tag types" do
     before do
       @taggable = MixedTaggableModel.new(:name => "Bob Jones")
@@ -159,23 +184,6 @@ describe "Taggable" do
 
     TaggableModel.tag_counts_on(:tags).length.should == 2
     @taggable.tag_counts_on(:tags).length.should == 2
-  end
-
-  it "should return [] right after create" do
-    blank_taggable = TaggableModel.new(:name => "Bob Jones")
-    blank_taggable.tag_list.should == []
-  end
-
-  it "should be able to create tags" do
-    @taggable.skill_list = "ruby, rails, css"
-    @taggable.instance_variable_get("@skill_list").instance_of?(ActsAsTaggableOn::TagList).should be_true
-
-    lambda {
-      @taggable.save
-    }.should change(ActsAsTaggableOn::Tag, :count).by(3)
-
-    @taggable.reload
-    @taggable.skill_list.sort.should == %w(ruby rails css).sort
   end
 
   it "should be able to create tags through the tag list directly" do

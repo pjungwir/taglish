@@ -2,7 +2,7 @@ class Taglish::Tagging < ActiveRecord::Base
   include Taglish::Util
 
   attr_accessible :tag, :tag_id, :context, :taggable, :taggable_type, :taggable_id,
-    :tagger, :tagger_type, :tagger_id, :score
+    :tagger, :tagger_type, :tagger_id, :score, :name
 
   belongs_to :tag, :class_name => 'Taglish::Tag'
   belongs_to :taggable, :polymorphic => true
@@ -12,10 +12,19 @@ class Taglish::Tagging < ActiveRecord::Base
   validates_presence_of :tag_id
   validates_uniqueness_of :tag_id, :scope => [ :taggable_type, :taggable_id, :context, :tagger_id, :tagger_type ]
 
-  after_destroy :remove_unused_tags
+  # after_destroy :remove_unused_tags
+
+  def tag_type
+    @tag_type ||= taggable.tag_types[context]
+  end
 
   def name
-    tag.name
+    @name ||= tag.name
+  end
+
+  def name=(v)
+    raise "Can't change the name of a tag/tagging" if @name or (tag and tag.name)
+    @name = v
   end
 
   def ==(object)
@@ -27,11 +36,7 @@ class Taglish::Tagging < ActiveRecord::Base
   end
 
   def to_s
-    if taggable.tags_have_score?(context)
-      "#{name}:#{score}"
-    else
-      name
-    end
+    score ? "#{name}:#{score}" : name
   end
 
   private

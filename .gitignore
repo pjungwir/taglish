@@ -5,3 +5,4 @@ tmp/**/*
 .*.swp
 .*.swo
 spec/database.yml
+spec/debug.log

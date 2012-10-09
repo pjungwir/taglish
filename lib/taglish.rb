@@ -5,7 +5,7 @@ require "action_view"
 require "digest/sha1"
 
 module Taglish
-  DELIMITER = ','
+  DEFAULT_DELIMITER = ','
 
 end
 
@@ -15,6 +15,7 @@ require 'taglish/tag_type'
 require 'taglish/tag'
 require 'taglish/taggable'
 require 'taglish/tagging'
+require 'taglish/tag_list'
 require 'taglish/core'
 
 

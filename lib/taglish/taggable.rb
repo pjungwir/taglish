@@ -78,9 +78,6 @@ module Taglish::Taggable
         include Taglish::Core
       end
     end
-    # NEXT: Write tests for just the functionality that I've got:
-    # just test that the right class attributes are being set,
-    # that the right methods are getting defined.
     # THEN: Copy/paste the save method, and think about how to implement
     # set_tag_list_on.
     # THEN: Implement tag_list_on.
@@ -89,15 +86,34 @@ module Taglish::Taggable
     new_tag_types.each do |ptt|   # ptt is the plural form
       stt = ptt.to_s.singularize
 
-      self.tag_types[ptt] = Taglish::TagType.new(ptt, scored, ordered)
+      tag_type = Taglish::TagType.new(ptt, :scored => scored, :ordered => ordered)
+      self.tag_types[ptt] = tag_type
+
+      taggings_scope_name = "#{stt}_taggings".to_sym
+      taggings_order = tag_type.ordered ? "#{Taglish::Tagging.table_name}.id" : nil
+
+      class_eval do
+        has_many taggings_scope_name, :as => :taggable,
+                                      :dependent => :destroy,
+                                      :include => :tag,
+                                      :class_name => 'Taglish::Tagging',
+                                      :conditions => ["#{Taglish::Tagging.table_name}.context = ?", ptt],
+                                      :order => taggings_order
+
+        has_many "#{stt}_tags".to_sym, :through => taggings_scope_name,
+                                       :source => :tag,
+                                       :class_name => "Taglish:Tag",
+                                       :order => taggings_order
+
+      end
 
       class_eval %(
         def #{stt}_list
-          tag_list_on('#{ptt}')
+          tag_list_on(tag_types['#{ptt}'])
         end
 
         def #{stt}_list=(new_tags)
-          set_tag_list_on('#{ptt}', new_tags)
+          set_tag_list_on(tag_types['#{ptt}'], new_tags)
         end
 
         def all_#{ptt}
