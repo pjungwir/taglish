@@ -1,0 +1,7 @@
+.bundle
+*.sqlite3
+tmp/*
+tmp/**/*
+.*.swp
+.*.swo
+spec/database.yml
