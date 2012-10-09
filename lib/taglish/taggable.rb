@@ -63,11 +63,7 @@ module Taglish::Taggable
       unless taggable?
         class_eval do
           class_attribute :tag_types
-          class_attribute :tags_have_order
-          class_attribute :tags_have_scores
-          self.tag_types = []
-          self.tags_have_order = HashWithIndifferentAccess.new
-          self.tags_have_scores = HashWithIndifferentAccess.new
+          self.tag_types = {}
 
           has_many :taggings, :as => :taggable, :dependent => :destroy,
             :include => :tag, :class_name => "Taglish::Tagging"
@@ -93,9 +89,7 @@ module Taglish::Taggable
       new_tag_types.each do |ptt|   # ptt is the plural form
         stt = ptt.to_s.singularize
 
-        self.tag_types << ptt
-        self.tags_have_order[ptt] = ordered
-        self.tags_have_scores[ptt] = scored
+        self.tag_types[ptt] = Taglish::TagType.new(ptt, scored, ordered)
 
         class_eval %(
           def #{stt}_list

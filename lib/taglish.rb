@@ -11,6 +11,7 @@ end
 
 
 require 'taglish/util'
+require 'taglish/tag_type'
 require 'taglish/tag'
 require 'taglish/taggable'
 require 'taglish/tagging'

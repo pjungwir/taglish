@@ -14,4 +14,14 @@ module Taglish::Core
   def add_tag_on(context, tag)
   end
 
+  # context is plural
+  def tags_have_score?(context)
+    tag_types[context.to_s].scored?
+  end
+
+  # context is plural
+  def tags_have_order?(context)
+    tag_types[context.to_s].ordered?
+  end
+
 end
