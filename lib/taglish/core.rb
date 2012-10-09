@@ -16,12 +16,16 @@ module Taglish::Core
 
   # context is plural
   def tags_have_score?(context)
-    tag_types[context.to_s].scored?
+    tag_types[context].scored?
   end
 
   # context is plural
   def tags_have_order?(context)
-    tag_types[context.to_s].ordered?
+    tag_types[context].ordered?
+  end
+
+  def taggable?
+    self.class.taggable?
   end
 
 end

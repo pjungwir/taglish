@@ -123,7 +123,31 @@ describe "Taggable" do
       TaggableModel.tag_types.should include type
     end
 
+    @taggable.class.should be_taggable
+    @taggable.should be_taggable
     @taggable.tag_types.should == TaggableModel.tag_types
+  end
+
+  context "with mixed tag types" do
+    before do
+      @taggable = MixedTaggableModel.new(:name => "Bob Jones")
+    end
+
+    it "should remember which tag types are ordered" do
+      @taggable.tags_have_score?(:skills).should be_false
+      @taggable.tags_have_score?(:colors).should be_false
+      @taggable.tags_have_score?(:question_counts).should be_true
+      @taggable.tags_have_score?(:needs).should be_false
+      @taggable.tags_have_score?(:offerings).should be_false
+    end
+
+    it "should remember which tag types are scored" do
+      @taggable.tags_have_order?(:skills).should be_false
+      @taggable.tags_have_order?(:colors).should be_true
+      @taggable.tags_have_order?(:question_counts).should be_false
+      @taggable.tags_have_order?(:needs).should be_false
+      @taggable.tags_have_order?(:offerings).should be_false
+    end
   end
 
 =begin

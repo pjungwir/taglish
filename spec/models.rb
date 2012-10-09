@@ -49,12 +49,13 @@ end
 
 class OrderedTaggableModel < ActiveRecord::Base
   ordered_taglish
-  ordered_taglish_on :colours
+  ordered_taglish_on :colors
 end
 
-class OrderedUnorderedTaggableModel < ActiveRecord::Base
+class MixedTaggableModel < ActiveRecord::Base
   taglish_on :skills
-  ordered_taglish_on :colours
+  ordered_taglish_on :colors
+  scored_taglish_on :question_counts
   taglish_on :needs, :offerings
 end
 
