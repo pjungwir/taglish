@@ -6,8 +6,8 @@ class Taglish::TagType
     opts = {
       :scored => false,
       :ordered => false,
-      :delimiter => ',',
-      :score_delimiter => ':',
+      :delimiter => Taglish::DEFAULT_DELIMITER,
+      :score_delimiter => Taglish::DEFAULT_SCORE_DELIMITER,
       :force_parameterize => false,
       :force_lowercase => false
     }.merge(opts)

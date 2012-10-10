@@ -6,6 +6,7 @@ require "digest/sha1"
 
 module Taglish
   DEFAULT_DELIMITER = ','
+  DEFAULT_SCORE_DELIMITER = ':'
 
 end
 
