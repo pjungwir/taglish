@@ -31,7 +31,7 @@ class Taglish::TagType
 
   def name_and_score(tag_str)
     if scored
-      tag_str =~ /^(.+):(\d+)$/ or raise "Scored tag has no score: #{tag_str}"
+      tag_str =~ Taglish::Taggable::SCORED_TAG_REGEX or raise "Scored tag has no score: #{tag_str}"
       [$1, $2.to_i]
     else
       [tag_str, nil]

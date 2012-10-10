@@ -203,6 +203,20 @@ describe "Taggable" do
       @taggable.question_counts.map{|tg| tg.name}.sort.should == %w(chef ruby sql)
       @taggable.question_counts.map{|tg| tg.score}.sort.should == [2, 5, 12]
     end
+
+    it "should save tags with zero and negative scores" do
+      @taggable.question_count_list = "ruby:0, sql:-5"
+
+      @taggable.instance_variable_get("@question_counts_list").instance_of?(Taglish::TagList).should be_true
+      lambda {
+        @taggable.save
+      }.should change(Taglish::Tagging, :count).by(2)
+
+      @taggable.reload
+      @taggable.question_count_list.sort.should == %w(ruby:0 sql:-5).sort
+      @taggable.question_counts.map{|tg| tg.name}.sort.should == %w(ruby sql)
+      @taggable.question_counts.map{|tg| tg.score}.sort.should == [-5, 0]
+    end
   end
 
   context "with mixed tag types" do

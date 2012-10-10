@@ -57,7 +57,7 @@ class Taglish::TagList < Array
   def remove(*names)
     extract_and_apply_options!(names)
     if tag_type.scored
-      delete_if { |name| names.include?(name.sub(/^(.+):(\d+)$/, '\1')) }
+      delete_if { |name| names.include?(name.sub(Taglish::Taggable::SCORED_TAG_REGEX, '\1')) }
     else
       delete_if { |name| names.include?(name) }
     end

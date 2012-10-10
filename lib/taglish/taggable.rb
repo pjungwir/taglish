@@ -1,5 +1,7 @@
 module Taglish::Taggable
 
+  SCORED_TAG_REGEX = /^(.+):(-?\d+)$/
+
   def taggable?
     false
   end
