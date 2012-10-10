@@ -6,3 +6,4 @@ tmp/**/*
 .*.swo
 spec/database.yml
 spec/debug.log
+README.html

@@ -11,3 +11,7 @@ RSpec::Core::RakeTask.new do |t|
 end
 
 Bundler::GemHelper.install_tasks
+
+task :readme => [] do |task|
+  `markdown README.md >README.html`
+end
