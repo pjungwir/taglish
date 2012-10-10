@@ -73,7 +73,7 @@ end
 
 def clean_database!
   models = [Taglish::Tag, Taglish::Tagging, TaggableModel, OtherTaggableModel, InheritingTaggableModel,
-            AlteredInheritingTaggableModel, TaggableUser, UntaggableModel, OrderedTaggableModel, ScoredTaggableModel]
+            AlteredInheritingTaggableModel, TaggableUser, UntaggableModel, OrderedTaggableModel, MixedTaggableModel, ScoredTaggableModel]
   models.each do |model|
     ActiveRecord::Base.connection.execute "DELETE FROM #{model.table_name}"
   end

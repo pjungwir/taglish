@@ -168,6 +168,43 @@ describe "Taggable" do
     }.should change(Taglish::Tag, :count).by(3)
   end
 
+  context "with scored tag types" do
+    before do
+      @taggable = ScoredTaggableModel.new(:name => "Bob Jones")
+    end
+
+    it "should save taggings" do
+      @taggable.question_count_list = "ruby:9, sql:5"
+
+      @taggable.instance_variable_get("@question_counts_list").instance_of?(Taglish::TagList).should be_true
+      lambda {
+        @taggable.save
+      }.should change(Taglish::Tagging, :count).by(2)
+
+      @taggable.reload
+      @taggable.question_count_list.sort.should == %w(ruby:9 sql:5).sort
+      @taggable.question_counts.map{|tg| tg.name}.sort.should == %w(ruby sql)
+      @taggable.question_counts.map{|tg| tg.score}.sort.should == [5, 9]
+    end
+
+    it "should remove old tags" do
+      @taggable.question_count_list = "ruby:9, sql:5, js:4"
+      @taggable.save!
+      @taggable.reload
+
+      # Change the score of one, remove one, add one, leave one unchanged:
+      @taggable.question_count_list = "ruby:12, sql:5, chef:2"
+      @taggable.instance_variable_get("@question_counts_list").instance_of?(Taglish::TagList).should be_true
+      lambda {
+        @taggable.save
+      }.should change(Taglish::Tagging, :count).by(0)
+      @taggable.reload
+      @taggable.question_count_list.sort.should == %w(ruby:12 sql:5 chef:2).sort
+      @taggable.question_counts.map{|tg| tg.name}.sort.should == %w(chef ruby sql)
+      @taggable.question_counts.map{|tg| tg.score}.sort.should == [2, 5, 12]
+    end
+  end
+
   context "with mixed tag types" do
     before do
       @taggable = MixedTaggableModel.new(:name => "Bob Jones")
